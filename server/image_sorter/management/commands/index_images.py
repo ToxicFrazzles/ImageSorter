@@ -20,7 +20,7 @@ class Command(BaseCommand):
                 for entity in dir_path.iterdir():
                     if not entity.is_file():
                         continue
-                    if ImageModel.objects.first(file_path=f"{entity}") is not None:
+                    if ImageModel.objects.filter(file_path=f"{entity}").first() is not None:
                         continue
                     try:
                         img = Image.open(entity)
