@@ -1,0 +1,46 @@
+{% extends 'image_sorter/base.html' %}
+
+{% block head %}
+    <style>
+    html, body, main {
+        height: 100%;
+        padding: 0;
+    }
+    main {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: auto 1fr;
+        max-height: 100%;
+    }
+    main>h1 {
+        grid-column: 1/4;
+    }
+    main>img {
+        grid-row-start: 2;
+        grid-column: 1/3;
+        max-width: 100%;
+        height: auto;
+        max-height: 100%;
+    }
+    main>div{
+        grid-row-start: 2;
+        grid-column-start: 3;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <main>
+    <h1>Tag Group "{{ tag_group }}" Tagging</h1>
+
+    <img src="{% url 'image_sorter:media' the_image %}"/>
+    <div>
+        <p>Which tag best describes the image?</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form }}
+            <button>Submit</button>
+        </form>
+    </div>
+    </main>
+{% endblock %}

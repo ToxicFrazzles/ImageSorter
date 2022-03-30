@@ -1,0 +1,32 @@
+{% extends 'image_sorter/base.html' %}
+
+
+{% block head %}
+    <style>
+        main {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+        main>div {
+            text-align: center;
+            border-radius: 10px;
+            padding: 5px;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <h1>Dashboard</h1>
+    <main>
+        <div>
+            <h3>Image Count:</h3>
+            <p>{{ image_count }} images</p>
+        </div>
+        <div>
+            <h3>Tag Groups</h3>
+            <p>{{ tag_group_count }} tag groups</p>
+            <a href="{% url 'image_sorter:tag_groups_list' %}">View</a>
+        </div>
+    </main>
+{% endblock %}
