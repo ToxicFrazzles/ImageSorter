@@ -20,8 +20,12 @@
     <h1>Dashboard</h1>
     <div id="container">
         <div>
-            <h3>Image Count:</h3>
-            <p>{{ image_count }} images</p>
+            <h3>Media File Counts:</h3>
+            <p>Images:{{ image_count }}</p>
+            <p>Videos: {{ video_count }}</p>
+            {% if unknown_count > 0 %}
+                <p>Unknown: {{ unknown_count }}</p>
+            {% endif %}
         </div>
         <div>
             <h3>Tag Groups</h3>
