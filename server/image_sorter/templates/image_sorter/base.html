@@ -2,10 +2,28 @@
 <html>
 <head>
     <title>Image Sorter</title>
+    <style>
+        html,body {
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: cadetblue;
+            color: white;
+        }
+        header a{
+            text-decoration: none;
+            color: white;
+        }
+    </style>
     {% block head %}
     {% endblock %}
 </head>
 <body>
+<header>
+    <a href="/" style="font-size: xxx-large; font-weight: bolder">Image Sorter</a>
+    <a href="{% url 'admin:index' %}">Admin Panel</a>
+</header>
 {% block content %}
 {% endblock %}
 </body>
