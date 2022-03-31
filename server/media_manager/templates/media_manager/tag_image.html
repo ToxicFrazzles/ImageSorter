@@ -1,4 +1,4 @@
-{% extends 'image_sorter/base.html' %}
+{% extends 'media_manager/base.html' %}
 
 {% block head %}
     <style>
@@ -68,7 +68,7 @@
     <div id="container">
         <h1>Tag Group "{{ tag_group }}" Tagging</h1>
         <div class="img">
-            <img id="image-to-tag" src="{% url 'image_sorter:media' the_image %}"/>
+            <img id="image-to-tag" src="{% url 'media_manager:media' the_image %}"/>
         </div>
         <div id="tagging-area">
             <p>Which tag best describes the image?</p>
@@ -128,7 +128,7 @@
             let tagId = event.target.value;
             console.log(tagId);
 
-            const url = "{% url 'image_sorter:tag_image' tag_group %}";
+            const url = "{% url 'media_manager:tag_image' tag_group %}";
             let post = JSON.stringify({
                 image_id: imageId,
                 tag_id: parseInt(tagId)

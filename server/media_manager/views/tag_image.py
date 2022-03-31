@@ -4,12 +4,12 @@ from .login_required import LoginRequiredView
 from django.shortcuts import render, redirect, reverse
 from django.http.response import JsonResponse
 from django import forms
-from ..models import TagGroup, Image, Tag
+from ..models import TagGroup, MediaFile, Tag
 
 
 class ImageTagForm(forms.Form):
     image_field = forms.IntegerField(widget=forms.HiddenInput, label=None, error_messages=None)
-    image: Image
+    image: MediaFile
 
     def __init__(self, tag_group: TagGroup, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -22,7 +22,7 @@ class ImageTagForm(forms.Form):
 
 class TagImageView(LoginRequiredView):
     def get(self, request, tag_group: TagGroup):
-        the_image = Image.objects.exclude(tags__group=tag_group).order_by('?').first()
+        the_image = MediaFile.objects.exclude(tags__group=tag_group).order_by('?').first()
         ctx = {
             "tag_group": tag_group,
             "the_image": the_image,
@@ -30,11 +30,11 @@ class TagImageView(LoginRequiredView):
             "form": ImageTagForm(tag_group)
         }
         ctx['form'].fields['image_field'].initial = the_image.id
-        return render(request, 'image_sorter/tag_image.html', context=ctx)
+        return render(request, 'media_manager/tag_image.html', context=ctx)
 
     def post(self, request, tag_group: TagGroup):
         post_data = json.loads(request.body)
-        image = Image.objects.get(id=post_data.get("image_id"))
+        image = MediaFile.objects.get(id=post_data.get("image_id"))
         if image.tags.filter(group=tag_group).count() > 0:
             # Image already tagged for this tag group.
             # Remove the tag so it can be replaced
@@ -43,11 +43,11 @@ class TagImageView(LoginRequiredView):
         image.tags.add(tag)
         image.save()
 
-        next_image = Image.objects.exclude(tags__group=tag_group).order_by('?').first()
+        next_image = MediaFile.objects.exclude(tags__group=tag_group).order_by('?').first()
         return JsonResponse({
             "next_image": {
                 "id": next_image.id,
-                "url": reverse("image_sorter:media", args=(next_image,))
+                "url": reverse("media_manager:media", args=(next_image,))
             }
         })
 

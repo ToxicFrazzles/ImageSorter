@@ -1,14 +1,14 @@
 from django import views
 from django.shortcuts import render, redirect
-from ..models import Image, TagGroup
+from ..models import MediaFile, TagGroup
 
 
 class IndexView(views.View):
     def get(self, request):
         if not request.user.is_authenticated:
-            return render(request, 'image_sorter/landing.html')
+            return render(request, 'media_manager/landing.html')
         ctx = {
-            'image_count': Image.objects.count(),
+            'image_count': MediaFile.objects.count(),
             'tag_group_count': TagGroup.objects.count()
         }
-        return render(request, 'image_sorter/dashboard.html', context=ctx)
+        return render(request, 'media_manager/dashboard.html', context=ctx)

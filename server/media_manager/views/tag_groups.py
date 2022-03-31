@@ -8,4 +8,4 @@ class TagGroupsListView(LoginRequiredView):
         ctx = {
             "tag_groups": TagGroup.objects.all()
         }
-        return render(request, "image_sorter/tag_groups_list.html", ctx)
+        return render(request, "media_manager/tag_groups_list.html", ctx)
