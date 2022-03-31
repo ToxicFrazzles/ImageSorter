@@ -2,16 +2,25 @@
 <html>
 <head>
     <title>Image Sorter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=0.86, maximum-scale=5.0, minimum-scale=0.86">
     <style>
-        html,body {
-            margin: 0;
+        html, body, main {
+            height: 100%;
             padding: 0;
+            margin: 0;
         }
+
+        body {
+            display: grid;
+            grid-template-rows: auto 1fr;
+        }
+
         header {
             background-color: cadetblue;
             color: white;
         }
-        header a{
+
+        header a {
             text-decoration: none;
             color: white;
         }
@@ -24,7 +33,9 @@
     <a href="/" style="font-size: xxx-large; font-weight: bolder">Image Sorter</a>
     <a href="{% url 'admin:index' %}">Admin Panel</a>
 </header>
-{% block content %}
-{% endblock %}
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
 </body>
 </html>

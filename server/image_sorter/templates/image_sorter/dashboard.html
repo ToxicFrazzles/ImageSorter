@@ -3,11 +3,11 @@
 
 {% block head %}
     <style>
-        main {
+        #container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         }
-        main>div {
+        #container>div {
             text-align: center;
             border-radius: 10px;
             padding: 5px;
@@ -18,7 +18,7 @@
 
 {% block content %}
     <h1>Dashboard</h1>
-    <main>
+    <div id="container">
         <div>
             <h3>Image Count:</h3>
             <p>{{ image_count }} images</p>
@@ -28,5 +28,5 @@
             <p>{{ tag_group_count }} tag groups</p>
             <a href="{% url 'image_sorter:tag_groups_list' %}">View</a>
         </div>
-    </main>
+    </div>
 {% endblock %}
