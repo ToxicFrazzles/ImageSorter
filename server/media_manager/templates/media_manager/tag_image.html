@@ -68,7 +68,7 @@
     <div id="container">
         <h1>Tag Group "{{ tag_group }}" Tagging</h1>
         <div class="img">
-            <img src="{% url 'media_manager:media' the_image %}"/>
+            <img id="image-to-tag" src="{% url 'media_manager:media' the_image %}"/>
         </div>
         <div id="tagging-area">
             <p>Which tag best describes the image?</p>
@@ -80,7 +80,7 @@
     {% csrf_token %}
     <script>
         const tagButtons = document.querySelectorAll("#tagging-area>button");
-        const imageEl = document.querySelector(".img");
+        const imageEl = document.querySelector(".img>img");
         let imageId = {{ the_image.id }};
 
         function getCookie(name) {
