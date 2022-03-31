@@ -2,7 +2,7 @@ from django.urls import path, register_converter
 from . import views
 from .models import Image, TagGroup
 
-app_name = 'image_sorter'
+app_name = 'media_manager'
 
 
 class ImageURLConverter:

@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=32)),
                 ('description', models.TextField(blank=True, default='')),
-                ('group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='image_sorter.taggroup')),
+                ('group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='media_manager.taggroup')),
             ],
         ),
         migrations.CreateModel(
@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('file_path', models.CharField(db_index=True, max_length=100, unique=True)),
-                ('tags', models.ManyToManyField(blank=True, to='image_sorter.tag')),
+                ('tags', models.ManyToManyField(blank=True, to='media_manager.tag')),
             ],
         ),
     ]

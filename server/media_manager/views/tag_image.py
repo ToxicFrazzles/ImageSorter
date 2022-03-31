@@ -54,11 +54,11 @@ class TagImageView(LoginRequiredView):
         # form = ImageTagForm(tag_group, data=request.POST)
         #
         # if not form.is_valid():
-        #     return redirect('image_sorter:tag_image', tag_group)
+        #     return redirect('media_manager:tag_image', tag_group)
         # image_id = form.cleaned_data['image_field']
         # image = Image.objects.get(id=image_id)
         # tag_id = form.cleaned_data['tag']
         # tag = Tag.objects.get(id=tag_id, group=tag_group)
         # image.tags.add(tag)
         # image.save()
-        # return redirect('image_sorter:tag_image', tag_group)
+        # return redirect('media_manager:tag_image', tag_group)

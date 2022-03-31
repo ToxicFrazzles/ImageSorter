@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from image_sorter.models import SourceDirectory, Image as ImageModel
+from media_manager.models import SourceDirectory, Image as ImageModel
 from pathlib import Path
 from PIL import Image, UnidentifiedImageError
 from time import sleep
