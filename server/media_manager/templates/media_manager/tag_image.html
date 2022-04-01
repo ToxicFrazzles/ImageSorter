@@ -74,15 +74,19 @@
         <div id="tagging-area">
             <p>Which tag best describes the image?</p>
             {% for tag in tags %}
-                <button value="{{ tag.id }}">{{ tag }}</button>
+                <button class="tag" value="{{ tag.id }}">{{ tag }}</button>
             {% endfor %}
+            <button class="undo" disabled autocomplete="off">Undo...</button>
         </div>
     </div>
     {% csrf_token %}
     <script>
-        const tagButtons = document.querySelectorAll("#tagging-area>button");
+        const tagButtons = document.querySelectorAll("#tagging-area button.tag");
+        const undoButtonEl = document.querySelector("#tagging-area button.undo");
         const imageEl = document.querySelector(".img>img");
         let imageId = {{ the_image.id }};
+        let previousImageId = null;
+        let previousImageUrl = null;
 
         function getCookie(name) {
             var cookieValue = null;
@@ -125,6 +129,19 @@
             });
         }
 
+        function undo(e){
+            disableButtons();
+            undoButtonEl.removeEventListener('click', undo);
+            undoButtonEl.disabled = true;
+            loadImage(previousImageUrl).then((img) => {
+                previousImageUrl = null;
+                previousImageId = null;
+                imageEl.src = img.src;
+            }).finally(() => {
+                enableButtons();
+            })
+        }
+
         function tagImage(event) {
             let tagId = event.target.value;
             console.log(tagId);
@@ -148,6 +165,8 @@
             }).then((response) => {
                 return response.json();
             }).then((res) => {
+                previousImageId = imageId;
+                previousImageUrl = imageEl.src;
                 imageId = res['next_image']["id"];
                 return loadImage(res['next_image']['url']);
             }).then((img) => {
@@ -156,6 +175,8 @@
                 console.log(error);
             }).finally(() => {
                 enableButtons();
+                undoButtonEl.addEventListener('click', undo)
+                undoButtonEl.disabled = false;
             });
         }
 
