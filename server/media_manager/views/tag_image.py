@@ -22,7 +22,7 @@ class ImageTagForm(forms.Form):
 
 class TagImageView(LoginRequiredView):
     def get(self, request, tag_group: TagGroup):
-        the_image = MediaFile.objects.exclude(tags__group=tag_group).order_by('?').first()
+        the_image = MediaFile.objects.exclude(tags__group=tag_group).filter(media_type=0).order_by('?').first()
         ctx = {
             "tag_group": tag_group,
             "the_image": the_image,
@@ -34,7 +34,7 @@ class TagImageView(LoginRequiredView):
 
     def post(self, request, tag_group: TagGroup):
         post_data = json.loads(request.body)
-        image = MediaFile.objects.get(id=post_data.get("image_id"), media_type=0)
+        image = MediaFile.objects.get(id=post_data.get("image_id"))
         if image.tags.filter(group=tag_group).count() > 0:
             # Image already tagged for this tag group.
             # Remove the tag so it can be replaced
@@ -43,7 +43,7 @@ class TagImageView(LoginRequiredView):
         image.tags.add(tag)
         image.save()
 
-        next_image = MediaFile.objects.exclude(tags__group=tag_group).order_by('?').first()
+        next_image = MediaFile.objects.exclude(tags__group=tag_group).filter(media_type=0).order_by('?').first()
         return JsonResponse({
             "next_image": {
                 "id": next_image.id,
