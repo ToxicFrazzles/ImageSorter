@@ -14,6 +14,9 @@ from shortuuid import uuid
 class Command(BaseCommand):
     help = 'Browses each source directory looking for images to add to the database'
 
+    def add_arguments(self, parser):
+        parser.add_argument("--once", action='store_true', help='Index all active source directories once instead of repeatedly')
+
     def handle(self, *args, **options):
         media_home_dir = Path(Setting.objects.get(key='media_home').value).resolve()
         if not media_home_dir.is_dir():
@@ -58,5 +61,7 @@ class Command(BaseCommand):
                             image.save()
                         except Exception as e:
                             print(e)
+            if options['once']:
+                break
             print("Sleeping. Zzzzzz")
             sleep(120)
