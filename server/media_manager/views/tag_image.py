@@ -2,9 +2,9 @@ import json
 from .login_required import LoginRequiredView
 from django.shortcuts import render, redirect, reverse
 from django.http.response import JsonResponse
-from django.db.models import Count, Q
+from django.db.models import Count
 from django import forms
-from ..models import TagGroup, MediaFile, Tag
+from ..models import TagGroup, MediaFile
 
 
 def get_next_image(tag_group: TagGroup):
@@ -62,15 +62,3 @@ class TagImageView(LoginRequiredView):
                 "media_type": next_image.media_type,
             }
         })
-
-        # form = ImageTagForm(tag_group, data=request.POST)
-        #
-        # if not form.is_valid():
-        #     return redirect('media_manager:tag_image', tag_group)
-        # image_id = form.cleaned_data['image_field']
-        # image = Image.objects.get(id=image_id)
-        # tag_id = form.cleaned_data['tag']
-        # tag = Tag.objects.get(id=tag_id, group=tag_group)
-        # image.tags.add(tag)
-        # image.save()
-        # return redirect('media_manager:tag_image', tag_group)
