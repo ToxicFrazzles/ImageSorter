@@ -44,7 +44,7 @@ class TagImageView(LoginRequiredView):
 
     def post(self, request, tag_group: TagGroup):
         post_data = json.loads(request.body)
-        image = MediaFile.objects.get(id=post_data.get("image_id"))
+        image = MediaFile.objects.select_related().prefetch_related().get(id=post_data.get("image_id"))
         if image.tags.filter(group=tag_group).count() > 0:
             # Image already tagged for this tag group.
             # Remove the tag so it can be replaced

@@ -134,6 +134,7 @@
             undoButtonEl.removeEventListener('click', undo);
             undoButtonEl.disabled = true;
             loadImage(previousImageUrl).then((img) => {
+                imageId = previousImageId;
                 previousImageUrl = null;
                 previousImageId = null;
                 imageEl.src = img.src;
