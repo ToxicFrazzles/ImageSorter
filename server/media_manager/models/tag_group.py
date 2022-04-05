@@ -4,7 +4,7 @@ from django.db import models
 class TagGroup(models.Model):
     name = models.CharField(max_length=32)
     description = models.TextField(blank=True, default="")
-    parent_tag = models.ForeignKey('Tag', on_delete=models.SET_NULL, null=True, default=None)
+    parent_tag = models.ForeignKey('Tag', on_delete=models.SET_NULL, null=True, blank=True, default=None)
 
     def __str__(self):
         return f"{self.name}"

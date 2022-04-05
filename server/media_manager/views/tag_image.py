@@ -22,7 +22,10 @@ class ImageTagForm(forms.Form):
 
 class TagImageView(LoginRequiredView):
     def get(self, request, tag_group: TagGroup):
-        the_image = MediaFile.objects.exclude(tags__group=tag_group).filter(media_type=0).order_by('?').first()
+        # Get all applicable media objects
+        media_set = MediaFile.objects.exclude(tags__group=tag_group).filter(tags=tag_group.parent_tag)
+        # Select a single random image
+        the_image = media_set.filter(media_type=0).order_by('?').first()
         ctx = {
             "tag_group": tag_group,
             "the_image": the_image,
