@@ -7,6 +7,14 @@ from django import forms
 from ..models import TagGroup, MediaFile, Tag
 
 
+def get_next_image(tag_group: TagGroup):
+    media_set = MediaFile.objects.exclude(tags__group=tag_group)
+    if tag_group.parent_tags.count() > 0:
+        media_set = media_set.filter(tags__in=tag_group.parent_tags.all())
+        media_set = media_set.annotate(num_parents=Count('tags')).filter(num_parents=tag_group.parent_tags.count())
+    return media_set.filter(media_type=0).distinct().order_by('?').first()
+
+
 class ImageTagForm(forms.Form):
     image_field = forms.IntegerField(widget=forms.HiddenInput, label=None, error_messages=None)
     image: MediaFile
@@ -22,14 +30,7 @@ class ImageTagForm(forms.Form):
 
 class TagImageView(LoginRequiredView):
     def get(self, request, tag_group: TagGroup):
-        # Get all applicable media objects
-        media_set = MediaFile.objects.exclude(tags__group=tag_group)
-        if tag_group.parent_tags.count() > 0:
-            media_set = media_set.filter(tags__in=tag_group.parent_tags.all())
-            media_set = media_set.annotate(num_parents=Count('tags')).filter(num_parents=tag_group.parent_tags.count())
-        # Select a single random image
-        print(media_set.filter(media_type=0).distinct().all())
-        the_image = media_set.filter(media_type=0).distinct().order_by('?').first()
+        the_image = get_next_image(tag_group)
         if the_image is None:
             return redirect('media_manager:tag_groups_list')
         ctx = {
@@ -52,7 +53,7 @@ class TagImageView(LoginRequiredView):
         image.tags.add(tag)
         image.save()
 
-        next_image = MediaFile.objects.exclude(tags__group=tag_group).filter(media_type=0).order_by('?').first()
+        next_image = get_next_image(tag_group)
         return JsonResponse({
             "next_image": {
                 "id": next_image.id,
