@@ -48,9 +48,9 @@ class TagImageView(LoginRequiredView):
         if image.tags.filter(group=tag_group).count() > 0:
             # Image already tagged for this tag group.
             # Remove the tag so it can be replaced
-            image.tags.remove(*tag_group.tag_set.all())
+            image.tags.remove(*tag_group.tag_set.exclude(id=post_data.get("tag_id")))
         tag = tag_group.tag_set.get(id=post_data.get("tag_id"))
-        image.tags.add(tag)
+        image.tags.add(tag, through_defaults={'certainty': 50, 'human_tagged': True})
         image.save()
 
         next_image = get_next_image(tag_group)
