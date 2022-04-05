@@ -9,7 +9,7 @@ class MediaTypeChoices(models.IntegerChoices):
 
 
 class MediaFile(models.Model):
-    file_path = models.CharField(max_length=100, db_index=True, unique=True)
+    file_path = models.CharField(max_length=200, db_index=True, unique=True)
     tags = models.ManyToManyField("Tag", blank=True)
     mime_type = models.CharField(max_length=20)
     media_type = models.IntegerField(choices=MediaTypeChoices.choices)

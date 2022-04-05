@@ -19,10 +19,13 @@ class SourceDirectoryAdmin(admin.ModelAdmin):
 
 @admin.register(TagGroup)
 class TagGroupAdmin(admin.ModelAdmin):
-    actions = ("silently_delete",)
+    actions = ("silently_delete", "clear_group")
 
     def silently_delete(self, request, queryset):
         queryset.delete()
+
+    def clear_group(self, request, queryset):
+        MediaFile.objects.filter(tags__group__in=queryset).delete()
 
 
 @admin.register(Tag)
@@ -31,6 +34,9 @@ class TagAdmin(admin.ModelAdmin):
 
     def silently_delete(self, request, queryset):
         queryset.delete()
+
+    def clear_tag(self, request, queryset):
+        MediaFile.objects.filter(tags__in=queryset).delete()
 
 
 @admin.register(Setting)

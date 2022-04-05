@@ -1,8 +1,8 @@
 import json
-
 from .login_required import LoginRequiredView
 from django.shortcuts import render, redirect, reverse
 from django.http.response import JsonResponse
+from django.db.models import Count, Q
 from django import forms
 from ..models import TagGroup, MediaFile, Tag
 
@@ -23,9 +23,15 @@ class ImageTagForm(forms.Form):
 class TagImageView(LoginRequiredView):
     def get(self, request, tag_group: TagGroup):
         # Get all applicable media objects
-        media_set = MediaFile.objects.exclude(tags__group=tag_group).filter(tags=tag_group.parent_tag)
+        media_set = MediaFile.objects.exclude(tags__group=tag_group)
+        if tag_group.parent_tags.count() > 0:
+            media_set = media_set.filter(tags__in=tag_group.parent_tags.all())
+            media_set = media_set.annotate(num_parents=Count('tags')).filter(num_parents=tag_group.parent_tags.count())
         # Select a single random image
-        the_image = media_set.filter(media_type=0).order_by('?').first()
+        print(media_set.filter(media_type=0).distinct().all())
+        the_image = media_set.filter(media_type=0).distinct().order_by('?').first()
+        if the_image is None:
+            return redirect('media_manager:tag_groups_list')
         ctx = {
             "tag_group": tag_group,
             "the_image": the_image,
