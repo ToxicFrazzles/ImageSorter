@@ -19,12 +19,18 @@ class SourceDirectoryAdmin(admin.ModelAdmin):
 
 @admin.register(TagGroup)
 class TagGroupAdmin(admin.ModelAdmin):
-    pass
+    actions = ("silently_delete",)
+
+    def silently_delete(self, request, queryset):
+        queryset.delete()
 
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    pass
+    actions = ("silently_delete",)
+
+    def silently_delete(self, request, queryset):
+        queryset.delete()
 
 
 @admin.register(Setting)
