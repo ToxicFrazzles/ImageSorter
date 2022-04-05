@@ -60,5 +60,5 @@ class TagImageView(LoginRequiredView):
                 "url": reverse("media_manager:media", args=(next_image,)),
                 "mime-type": next_image.mime_type,
                 "media_type": next_image.media_type,
-            }
+            } if next_image else None
         })

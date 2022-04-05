@@ -166,6 +166,10 @@
             }).then((response) => {
                 return response.json();
             }).then((res) => {
+                if(res['next_image'] === null){
+                    location.reload();
+                    return;
+                }
                 previousImageId = imageId;
                 previousImageUrl = imageEl.src;
                 imageId = res['next_image']["id"];
