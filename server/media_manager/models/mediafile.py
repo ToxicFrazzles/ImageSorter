@@ -1,7 +1,5 @@
 from django.db import models
 from pathlib import Path
-from .tag_action import TagAction
-from .tag import Tag
 
 
 class MediaTypeChoices(models.IntegerChoices):

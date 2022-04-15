@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import MediaFile, SourceDirectory, TagGroup, Tag, Setting
+from .models import MediaFile, SourceDirectory, Tag, Setting, TagAction
 from django.utils.html import mark_safe
 from django.urls import reverse
 
@@ -15,17 +15,6 @@ class ImageAdmin(admin.ModelAdmin):
 @admin.register(SourceDirectory)
 class SourceDirectoryAdmin(admin.ModelAdmin):
     pass
-
-
-@admin.register(TagGroup)
-class TagGroupAdmin(admin.ModelAdmin):
-    actions = ("silently_delete", "clear_group")
-
-    def silently_delete(self, request, queryset):
-        queryset.delete()
-
-    def clear_group(self, request, queryset):
-        MediaFile.objects.filter(tags__group__in=queryset).delete()
 
 
 @admin.register(Tag)
@@ -49,3 +38,8 @@ class SettingAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request, obj=None):
         return False
+
+
+@admin.register(TagAction)
+class TagActionAdmin(admin.ModelAdmin):
+    pass

@@ -4,56 +4,36 @@ from django.shortcuts import render, redirect, reverse
 from django.http.response import JsonResponse
 from django.db.models import Count
 from django import forms
-from ..models import TagGroup, MediaFile
+from ..models import MediaFile, Tag, TagAction
 
 
-def get_next_image(tag_group: TagGroup):
-    media_set = MediaFile.objects.exclude(tags__group=tag_group)
-    if tag_group.parent_tags.count() > 0:
-        media_set = media_set.filter(tags__in=tag_group.parent_tags.all())
-        media_set = media_set.annotate(num_parents=Count('tags')).filter(num_parents=tag_group.parent_tags.count())
+def get_next_image(tag: Tag):
+    media_set = MediaFile.objects.exclude(tags=tag)
     return media_set.filter(media_type=0).distinct().order_by('?').first()
 
 
-class ImageTagForm(forms.Form):
-    image_field = forms.IntegerField(widget=forms.HiddenInput, label=None, error_messages=None)
-    image: MediaFile
-
-    def __init__(self, tag_group: TagGroup, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        tag_options = []
-        for tag in tag_group.tag_set.all():
-            tag_options.append((tag.id, tag.name))
-        tag_options.sort(key=lambda x: x[1])
-        self.fields["tag"] = forms.ChoiceField(choices=tag_options)
-
-
 class TagImageView(LoginRequiredView):
-    def get(self, request, tag_group: TagGroup):
-        the_image = get_next_image(tag_group)
+    def get(self, request, tag):
+        the_image = get_next_image(tag)
         if the_image is None:
             return redirect('media_manager:tag_groups_list')
         ctx = {
-            "tag_group": tag_group,
             "the_image": the_image,
-            "tags": tag_group.tag_set.all().order_by('name'),
-            "form": ImageTagForm(tag_group)
+            "tag": tag
         }
-        ctx['form'].fields['image_field'].initial = the_image.id
         return render(request, 'media_manager/tag_image.html', context=ctx)
 
-    def post(self, request, tag_group: TagGroup):
+    def post(self, request, tag: Tag):
         post_data = json.loads(request.body)
-        image = MediaFile.objects.select_related().prefetch_related().get(id=post_data.get("image_id"))
-        if image.tags.filter(group=tag_group).count() > 0:
+        image: MediaFile = MediaFile.objects.select_related().prefetch_related().get(id=post_data.get("image_id"))
+        if image.tags.contains(tag):
             # Image already tagged for this tag group.
             # Remove the tag so it can be replaced
-            image.tags.remove(*tag_group.tag_set.exclude(id=post_data.get("tag_id")))
-        tag = tag_group.tag_set.get(id=post_data.get("tag_id"))
-        image.tags.add(tag, through_defaults={'certainty': 50, 'human_tagged': True})
+            TagAction.objects.get(media_file=image).delete()
+        image.tags.add(tag, through_defaults={'certainty': 50, 'human_tagged': True, 'positive': post_data['positive']})
         image.save()
 
-        next_image = get_next_image(tag_group)
+        next_image = get_next_image(tag)
         return JsonResponse({
             "next_image": {
                 "id": next_image.id,

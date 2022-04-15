@@ -7,7 +7,8 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         }
-        #container>div {
+
+        #container > div {
             text-align: center;
             border-radius: 10px;
             border: 1px solid gray;
@@ -20,20 +21,16 @@
 
 
 {% block content %}
-    <h1>Dashboard</h1>
+    <h1>Tags Dashboard</h1>
     <div id="container">
-        <div>
-            <h3>Media File Counts:</h3>
-            <p>Images:{{ image_count }}</p>
-            <p>Videos: {{ video_count }}</p>
-            {% if unknown_count > 0 %}
-                <p>Unknown: {{ unknown_count }}</p>
-            {% endif %}
-        </div>
-        <div>
-            <h3>Tags</h3>
-            <p>Count: {{ tag_count }}</p>
-            <a href="{% url 'media_manager:tag_list' %}">Tag</a>
-        </div>
+        {% for tag in tags %}
+            <div>
+                <h3>{{ tag }}</h3>
+                <p>Positive: {{ tag.positive_count }}</p>
+                <p>Negative: {{ tag.negative_count }}</p>
+                <p>Untagged: {{ tag.untagged_count }}</p>
+                <a href="{% url 'media_manager:tag_image' tag %}">Tag images</a>
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}

@@ -29,6 +29,7 @@
         .img img {
             max-height: 100%;
             max-width: 100%;
+            height: auto;
         }
 
         #container > div {
@@ -60,6 +61,7 @@
             #tagging-area>button{
                 margin: 3px;
                 padding: 3px;
+                min-width: 30px;
             }
         }
     </style>
@@ -67,15 +69,13 @@
 
 {% block content %}
     <div id="container">
-        <h1>Tag Group "{{ tag_group }}" Tagging</h1>
+        <h1>{{ tag }} Image Tagging</h1>
         <div class="img">
             <img id="image-to-tag" src="{% url 'media_manager:media' the_image %}"/>
         </div>
         <div id="tagging-area">
-            <p>Which tag best describes the image?</p>
-            {% for tag in tags %}
-                <button class="tag" value="{{ tag.id }}">{{ tag }}</button>
-            {% endfor %}
+            <button class="tag" value="positive">{{ tag }}</button>
+            <button class="tag" value="negative">Not {{ tag }}</button>
             <button class="undo" disabled autocomplete="off">Undo...</button>
         </div>
     </div>
@@ -144,13 +144,12 @@
         }
 
         function tagImage(event) {
-            let tagId = event.target.value;
-            console.log(tagId);
+            let positivity = event.target.value === "positive";
 
-            const url = "{% url 'media_manager:tag_image' tag_group %}";
+            const url = "{% url 'media_manager:tag_image' tag %}";
             let post = JSON.stringify({
                 image_id: imageId,
-                tag_id: parseInt(tagId)
+                positive: positivity
             });
 
             disableButtons();

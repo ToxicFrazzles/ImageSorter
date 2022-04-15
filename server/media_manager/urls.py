@@ -1,6 +1,6 @@
 from django.urls import path, register_converter
 from . import views
-from .models import MediaFile, TagGroup
+from .models import MediaFile, Tag
 
 app_name = 'media_manager'
 
@@ -15,22 +15,22 @@ class ImageURLConverter:
         return f"{value.id}"
 
 
-class TagGroupConverter:
+class TagConverter:
     regex = r"\d+"
 
     def to_python(self, value):
-        return TagGroup.objects.get(id=int(value))
+        return Tag.objects.get(id=int(value))
 
     def to_url(self, value):
         return f"{value.id}"
 
 
 register_converter(ImageURLConverter, 'image')
-register_converter(TagGroupConverter, 'tag_group')
+register_converter(TagConverter, 'tag')
 
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
     path('image/<image:image>/', views.MediaView.as_view(), name='media'),
-    path('tag_groups/list/', views.TagGroupsListView.as_view(), name="tag_groups_list"),
-    path('tag_groups/<tag_group:tag_group>/tag_image/', views.TagImageView.as_view(), name='tag_image'),
+    path('tags/list/', views.TagsListView.as_view(), name='tag_list'),
+    path('tags/<tag:tag>/tag_image/', views.TagImageView.as_view(), name='tag_image'),
 ]
