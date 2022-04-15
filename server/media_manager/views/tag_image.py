@@ -16,7 +16,7 @@ class TagImageView(LoginRequiredView):
     def get(self, request, tag):
         the_image = get_next_image(tag)
         if the_image is None:
-            return redirect('media_manager:tag_groups_list')
+            return redirect('media_manager:tag_list')
         ctx = {
             "the_image": the_image,
             "tag": tag
