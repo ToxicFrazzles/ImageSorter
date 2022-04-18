@@ -35,5 +35,10 @@
             <p>Count: {{ tag_count }}</p>
             <a href="{% url 'media_manager:tag_list' %}">Tag</a>
         </div>
+        <div>
+            <h3>Similar Images</h3>
+            <p>Images To Review: {{ similar_images }}</p>
+            <a href="{% url 'media_manager:similar_images' %}">Review</a>
+        </div>
     </div>
 {% endblock %}

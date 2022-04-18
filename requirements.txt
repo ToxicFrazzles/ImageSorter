@@ -2,3 +2,4 @@ django
 pillow
 python-magic
 shortuuid
+imagehash
