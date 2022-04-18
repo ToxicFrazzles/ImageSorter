@@ -29,7 +29,7 @@ class Command(BaseCommand):
                 for media_file in MediaFile.objects.filter(similar_to=None, media_type=0, diff_hash1=None, diff_hash2=None, diff_hash3=None, diff_hash4=None):
                     try:
                         image = Image.open(media_file.file_path)
-                    except UnidentifiedImageError:
+                    except (UnidentifiedImageError, Image.DecompressionBombError):
                         continue
                     try:
                         raw_im_hash = dhash(image, hash_size=16)
