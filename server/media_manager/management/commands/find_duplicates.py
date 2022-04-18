@@ -42,7 +42,7 @@ class Command(BaseCommand):
                     for similar_image in similar_images:
                         similar_img = Image.open(similar_image.file_path)
                         similar_img_arr = np.array(similar_img)
-                        diff = image_arr != similar_img_arr
+                        diff = (image_arr != similar_img_arr).any()
                         if diff:
                             media_file.similar_to.add(similar_image)
                         elif not is_animated(image) and not is_animated(similar_img):
