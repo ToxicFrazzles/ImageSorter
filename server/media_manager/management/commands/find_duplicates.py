@@ -27,7 +27,10 @@ class Command(BaseCommand):
             print("Searching for duplicates")
             try:
                 for media_file in MediaFile.objects.filter(similar_to=None, media_type=0, diff_hash1=None, diff_hash2=None, diff_hash3=None, diff_hash4=None):
-                    image = Image.open(media_file.file_path)
+                    try:
+                        image = Image.open(media_file.file_path)
+                    except UnidentifiedImageError:
+                        continue
                     try:
                         raw_im_hash = dhash(image, hash_size=16)
                     except OSError:
