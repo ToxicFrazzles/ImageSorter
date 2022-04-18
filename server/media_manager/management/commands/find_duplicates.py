@@ -28,7 +28,11 @@ class Command(BaseCommand):
             try:
                 for media_file in MediaFile.objects.filter(similar_to=None, media_type=0, diff_hash1=None, diff_hash2=None, diff_hash3=None, diff_hash4=None):
                     image = Image.open(media_file.file_path)
-                    raw_im_hash = dhash(image, hash_size=16)
+                    try:
+                        raw_im_hash = dhash(image, hash_size=16)
+                    except OSError:
+                        print(f"{media_file.file_path} is invalid. Possible to recover manually?")
+                        continue
                     im_hash = np.packbits(np.array(raw_im_hash.hash).reshape(1, 16**2), axis=1).view(np.int64)[0]
 
                     similar_images = MediaFile.objects.filter(media_type=0, diff_hash1=im_hash[0], diff_hash2=im_hash[1], diff_hash3=im_hash[2], diff_hash4=im_hash[3])
