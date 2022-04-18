@@ -40,7 +40,7 @@ class Command(BaseCommand):
                     image_arr = np.array(image)
                     should_save = True
                     for similar_image in similar_images:
-                        similar_img = Image.open(similar_image)
+                        similar_img = Image.open(similar_image.file_path)
                         similar_img_arr = np.array(similar_img)
                         diff = image_arr != similar_img_arr
                         if diff:
