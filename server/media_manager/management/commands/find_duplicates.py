@@ -45,14 +45,14 @@ class Command(BaseCommand):
                     for similar_image in similar_images:
                         similar_img = Image.open(similar_image.file_path)
                         similar_img_arr = np.array(similar_img)
-                        diff = np.array_equal(image_arr, similar_img_arr)
-                        if diff:
-                            media_file.similar_to.add(similar_image)
-                        elif not is_animated(image) and not is_animated(similar_img):
+                        same = np.array_equal(image_arr, similar_img_arr)
+                        if same and not is_animated(image) and not is_animated(similar_img):
                             should_save = False
                             media_file.delete()
                             Path(media_file.file_path).unlink()
                             break
+                        else:
+                            media_file.similar_to.add(similar_image)
                     if not should_save:
                         continue
                     media_file.diff_hash1 = im_hash[0]
