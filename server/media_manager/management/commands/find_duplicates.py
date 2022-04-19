@@ -48,9 +48,17 @@ class Command(BaseCommand):
                         same = np.array_equal(image_arr, similar_img_arr)
                         if same and not is_animated(image) and not is_animated(similar_img):
                             should_save = False
-                            media_file.delete()
                             Path(media_file.file_path).unlink()
+                            media_file.delete()
                             break
+                        elif same and is_animated(image) and not is_animated(similar_img):
+                            Path(similar_image.file_path).unlink()
+                            similar_image.delete()
+                            break
+                        elif same and not is_animated(image) and is_animated(similar_img):
+                            should_save = False
+                            Path(media_file.file_path).unlink()
+                            media_file.delete()
                         else:
                             media_file.similar_to.add(similar_image)
                     if not should_save:
