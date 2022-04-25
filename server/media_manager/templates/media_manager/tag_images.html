@@ -140,6 +140,7 @@
                     imgDiv.appendChild(image.img);
                     containerEl.appendChild(imgDiv);
                 }
+                window.scrollTo({top: 0, behavior: 'smooth'})
             }).catch((error) => {
                 console.log(error);
             }).finally(() => {
