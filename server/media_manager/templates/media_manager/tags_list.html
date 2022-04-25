@@ -29,7 +29,7 @@
                 <p>Positive: {{ tag.positive_count }}</p>
                 <p>Negative: {{ tag.negative_count }}</p>
                 <p>Untagged: {{ tag.untagged_count }}</p>
-                <a href="{% url 'media_manager:tag_image' tag %}">Tag images</a>
+                <a href="{% url 'media_manager:tag_images' tag %}">Tag images</a>
             </div>
         {% endfor %}
     </div>

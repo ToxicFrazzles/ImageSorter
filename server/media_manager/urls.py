@@ -33,5 +33,6 @@ urlpatterns = [
     path('image/<image:image>/', views.MediaView.as_view(), name='media'),
     path('tags/list/', views.TagsListView.as_view(), name='tag_list'),
     path('tags/<tag:tag>/tag_image/', views.TagImageView.as_view(), name='tag_image'),
+    path('tags/<tag:tag>/tag_images/', views.TagImagesView.as_view(), name='tag_images'),
     path('similar_images/', views.SimilarImagesView.as_view(), name='similar_images'),
 ]
