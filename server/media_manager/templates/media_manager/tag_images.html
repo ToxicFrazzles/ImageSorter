@@ -150,14 +150,12 @@
         }
 
         function selectImage(e){
-            console.log("Click!")
             let container;
             if(e.target.tagName.toLowerCase() === "img"){
                 container = e.target.parentElement;
             }else{
                 container = e.target;
             }
-            console.log(container)
             if(container.classList.contains("selected")){
                 container.classList.remove("selected");
             }else{
