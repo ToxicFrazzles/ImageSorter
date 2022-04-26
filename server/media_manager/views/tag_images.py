@@ -9,7 +9,7 @@ from ..models import MediaFile, Tag, TagAction
 
 def get_next_image_set(tag: Tag):
     media_set = MediaFile.objects.exclude(tags=tag)
-    return media_set.filter(media_type=0).distinct().order_by('?')[:20]
+    return media_set.filter(media_type=0).distinct()[:20]
 
 
 class TagImagesView(LoginRequiredView):
