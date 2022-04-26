@@ -3,3 +3,4 @@ pillow
 python-magic
 shortuuid
 imagehash
+django-query-profiler
