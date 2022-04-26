@@ -26,25 +26,36 @@ class TagImagesView(LoginRequiredView):
     def post(self, request, tag: Tag):
         post_data = json.loads(request.body)
 
-        for positive_match in post_data.get('positives'):
-            image: MediaFile = MediaFile.objects.select_related().prefetch_related().get(id=positive_match)
+        positive_images = MediaFile.objects.prefetch_related("tags").filter(id__in=post_data.get('positives'))
+        negative_images = MediaFile.objects.prefetch_related("tags").filter(id__in=post_data.get('negatives'))
+        tag_actions_to_delete = []
+        tag_actions_to_create = []
+        image: MediaFile
+        for image in positive_images:
             if image.tags.contains(tag):
                 # Image already tagged for this tag group.
                 # Remove the tag so it can be replaced
-                TagAction.objects.get(media_file=image).delete()
-            image.tags.add(tag,
-                           through_defaults={'certainty': 50, 'human_tagged': True, 'positive': True})
-            image.save()
+                tag_actions_to_delete.append(image.tagaction_set.filter(tag=tag))
+            tag_actions_to_create.append(TagAction(tag=tag, media_file=image, certainty=50, human_tagged=True, positive=True))
+            # image.tags.add(tag,
+            #                through_defaults={'certainty': 50, 'human_tagged': True, 'positive': True})
 
-        for negative_match in post_data.get('negatives'):
-            image: MediaFile = MediaFile.objects.select_related().prefetch_related().get(id=negative_match)
+        for image in negative_images:
             if image.tags.contains(tag):
                 # Image already tagged for this tag group.
                 # Remove the tag so it can be replaced
-                TagAction.objects.get(media_file=image).delete()
-            image.tags.add(tag,
-                           through_defaults={'certainty': 50, 'human_tagged': True, 'positive': False})
-            image.save()
+                tag_actions_to_delete.append(image.tagaction_set.filter(tag=tag))
+            tag_actions_to_create.append(TagAction(tag=tag, media_file=image, certainty=50, human_tagged=True, positive=False))
+            # image.tags.add(tag,
+            #                through_defaults={'certainty': 50, 'human_tagged': True, 'positive': False})
+
+        if tag_actions_to_delete:
+            deletion_queryset = tag_actions_to_delete.pop()
+            for q in tag_actions_to_delete:
+                deletion_queryset |= q
+            deletion_queryset.delete()
+
+        TagAction.objects.bulk_create(tag_actions_to_create)
 
         next_images = get_next_image_set(tag)
         return JsonResponse({
