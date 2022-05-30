@@ -1,17 +1,14 @@
 import json
 import random
-
 from .login_required import LoginRequiredView
 from django.shortcuts import render, redirect, reverse
 from django.http.response import JsonResponse
-from django.db.models import Count
-from django import forms
 from ..models import MediaFile, Tag, TagAction
 
 
 def get_next_image_set(tag: Tag):
     media_set = MediaFile.objects.exclude(tags=tag)
-    offset = media_set.count() -21
+    offset = random.randint(0, media_set.count() -21)
     return media_set[offset:offset+20]
 
 
