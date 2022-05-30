@@ -1,4 +1,6 @@
 import json
+import random
+
 from .login_required import LoginRequiredView
 from django.shortcuts import render, redirect, reverse
 from django.http.response import JsonResponse
@@ -9,13 +11,14 @@ from ..models import MediaFile, Tag, TagAction
 
 def get_next_image_set(tag: Tag):
     media_set = MediaFile.objects.exclude(tags=tag)
-    return media_set.filter(media_type=0).distinct()[:20]
+    offset = media_set.count() -21
+    return media_set[offset:offset+20]
 
 
 class TagImagesView(LoginRequiredView):
     def get(self, request, tag):
         the_images = get_next_image_set(tag)
-        if the_images.count() == 0:
+        if len(the_images) == 0:
             return redirect('media_manager:tag_list')
         ctx = {
             "the_images": the_images,

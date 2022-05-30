@@ -78,7 +78,7 @@
                 let img = new Image();
                 img.addEventListener('load', e => resolve({id: image.id, img: img}));
                 img.addEventListener('error', () => {
-                    reject(new Error(`Failed to load image's URL: ${url}`));
+                    reject(new Error(`Failed to load image's URL: ${img.url}`));
                 });
                 img.src = image.url;
             });

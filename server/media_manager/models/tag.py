@@ -17,4 +17,4 @@ class Tag(models.Model):
         return TagAction.objects.filter(tag=self, positive=False).count()
 
     def untagged_count(self):
-        return MediaFile.objects.count() - TagAction.objects.filter(tag=self).count()
+        return MediaFile.objects.select_related('tags').exclude(tags=self).count()
