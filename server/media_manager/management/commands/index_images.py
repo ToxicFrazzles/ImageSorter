@@ -1,7 +1,7 @@
 import secrets
 import string
 from django.core.management.base import BaseCommand, CommandError
-from ...models import SourceDirectory, MediaFile, MediaTypeChoices
+from ...models import SourceDirectory, MediaFile
 from django.conf import settings
 from pathlib import Path
 from PIL import Image, UnidentifiedImageError
@@ -47,8 +47,8 @@ class Command(BaseCommand):
                             continue
                         mime = magic.from_file(entity, mime=True)
                         media_type_map = {
-                            "image": MediaTypeChoices.IMAGE,
-                            "video": MediaTypeChoices.VIDEO
+                            "image": MediaFile.MediaType.IMAGE,
+                            "video": MediaFile.MediaType.VIDEO
                         }
                         media_type = mime.split("/")[0]
                         if media_type not in media_type_map:

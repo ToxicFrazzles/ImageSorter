@@ -7,7 +7,7 @@ from ..models import MediaFile, Tag, TagAction
 
 
 def get_next_image_set(tag: Tag):
-    media_set = MediaFile.objects.exclude(tags=tag)
+    media_set = MediaFile.objects.exclude(tags=tag).filter(media_type=MediaFile.MediaType.IMAGE)
     offset = random.randint(0, tag.untagged_count()-21)
     return media_set[offset:offset+20]
 
