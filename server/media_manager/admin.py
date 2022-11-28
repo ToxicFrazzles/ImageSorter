@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import MediaFile, SourceDirectory, Tag, Setting, TagAction
+from .models import MediaFile, SourceDirectory, Tag, TagAction
 from django.utils.html import mark_safe
 from django.urls import reverse
 
@@ -26,18 +26,6 @@ class TagAdmin(admin.ModelAdmin):
 
     def clear_tag(self, request, queryset):
         MediaFile.objects.filter(tags__in=queryset).delete()
-
-
-@admin.register(Setting)
-class SettingAdmin(admin.ModelAdmin):
-    fields = ('key', 'value')
-    readonly_fields = ('name', 'key')
-
-    def has_delete_permission(self, request, obj=None):
-        return False
-
-    def has_add_permission(self, request, obj=None):
-        return False
 
 
 @admin.register(TagAction)

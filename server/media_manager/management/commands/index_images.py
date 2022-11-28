@@ -1,7 +1,8 @@
 import secrets
 import string
 from django.core.management.base import BaseCommand, CommandError
-from media_manager.models import SourceDirectory, MediaFile, MediaTypeChoices, Setting
+from ...models import SourceDirectory, MediaFile, MediaTypeChoices
+from django.conf import settings
 from pathlib import Path
 from PIL import Image, UnidentifiedImageError
 from time import sleep
@@ -18,7 +19,7 @@ class Command(BaseCommand):
         parser.add_argument("--once", action='store_true', help='Index all active source directories once instead of repeatedly')
 
     def handle(self, *args, **options):
-        media_home_dir = Path(Setting.objects.get(key='media_home').value).resolve()
+        media_home_dir = Path(settings.MEDIA_HOME_DIRECTORY).resolve()
         if not media_home_dir.is_dir():
             media_home_dir.mkdir(parents=True)
         while True:
@@ -28,7 +29,9 @@ class Command(BaseCommand):
                 if dir.path.is_absolute():
                     dir_path = dir.path
                 else:
-                    dir_path = (Path(__file__).parent.parent.parent.parent / dir.path).resolve()
+                    dir.active = False
+                    dir.save()
+                    continue
                 if not dir_path.is_dir():
                     dir.active = False
                     dir.save()

@@ -127,5 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-secret_*
+
+
+secret_key.txt
 media_home/
