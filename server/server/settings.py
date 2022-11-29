@@ -14,7 +14,6 @@ from pathlib import Path
 import os
 from django.core.management.utils import get_random_secret_key
 from .secret_key import get_secret_key
-from django_query_profiler.settings import *
 
 try:
     from .local_settings import *
@@ -48,7 +47,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_query_profiler',
     'media_manager',
 ]
 
@@ -60,7 +58,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_query_profiler.client.middleware.QueryProfilerMiddleware',
 ]
 
 ROOT_URLCONF = 'server.urls'
