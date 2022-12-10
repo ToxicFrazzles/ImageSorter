@@ -19,6 +19,6 @@ import media_manager.urls
 
 urlpatterns = [
     path('', include(media_manager.urls)),
-    path('django_query_profiler/', include('django_query_profiler.client.urls')),
+    # path('django_query_profiler/', include('django_query_profiler.client.urls')),
     path('admin/', admin.site.urls),
 ]

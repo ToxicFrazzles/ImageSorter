@@ -41,6 +41,7 @@ DEBUG = os.environ.get("DEBUG", None) == "true"
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'media_manager',
+    'auto_tagger',
 ]
 
 MIDDLEWARE = [
@@ -78,6 +80,7 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = 'server.asgi.application'
 WSGI_APPLICATION = 'server.wsgi.application'
 
 
