@@ -4,3 +4,6 @@ python-magic
 shortuuid
 imagehash
 django-query-profiler
+channels
+daphne
+websockets

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import MediaFile, SourceDirectory, Tag, TagAction
+from .models import MediaFile, SourceDirectory, Tag, TagAction, TagAlias
 from django.utils.html import mark_safe
 from django.urls import reverse
 
@@ -26,6 +26,11 @@ class TagAdmin(admin.ModelAdmin):
 
     def clear_tag(self, request, queryset):
         MediaFile.objects.filter(tags__in=queryset).delete()
+
+
+@admin.register(TagAlias)
+class TagAliasAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(TagAction)
