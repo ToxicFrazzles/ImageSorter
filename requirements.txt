@@ -6,4 +6,9 @@ imagehash
 django-query-profiler
 channels
 daphne
+
 websockets
+aiohttp
+aiodns
+brotli
+aiofiles

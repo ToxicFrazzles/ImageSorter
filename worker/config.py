@@ -5,9 +5,10 @@ from pathlib import Path
 defaults = {
     "DEFAULT": {
         "work type": "training, inference",
-        "mediamanager location": "ws://localhost:8000/ws/auto_tag/",
+        "mediamanager location": "http://localhost:8000/",
         "client id": "<CLIENT ID>",
-        "client secret": "<CLIENT SECRET>"
+        "client secret": "<CLIENT SECRET>",
+        "temp directory": "temp/"
     }
 }
 
@@ -26,8 +27,16 @@ class Config:
             print("Please review this file to ensure the configuration is correct")
 
     @property
-    def server_uri(self):
-        return self.parser.get("DEFAULT", "mediamanager location")
+    def websocket_uri(self):
+        return f"ws{self.mediamanager_location[4:]}/ws/auto_tag/"
+
+    @property
+    def api_uri(self):
+        return f"{self.mediamanager_location}/"
+
+    @property
+    def mediamanager_location(self):
+        return self.parser.get("DEFAULT", "mediamanager location").rstrip("/")
 
     @property
     def do_training(self):
@@ -44,6 +53,10 @@ class Config:
     @property
     def client_secret(self):
         return self.parser.get("DEFAULT", "client secret")
+
+    @property
+    def temp_directory(self):
+        return Path(self.parser.get("DEFAULT", "temp directory")).resolve()
 
 
 config: Config

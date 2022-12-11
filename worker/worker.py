@@ -1,27 +1,28 @@
 import asyncio
+import hashlib
+import json
+
+import aiohttp
 
 from . import config
-from .connection import Connection
+from .media_manager import MediaManager
 
 
 class Worker:
     def __init__(self):
-        self.conn = Connection(config.config.server_uri)
+        self.manager = MediaManager()
 
     async def _run(self):
-        t = asyncio.create_task(self.conn.handler())
+        await self.manager.start()
+        await self.manager.log_ping()
         i = 0
-        try:
-            while True:
-                await asyncio.sleep(10)
-                await self.conn.update_status({
-                    "iteration": i,
-                    "task": "Idle"
-                })
-                print("Worker Loop")
-                print(f"Average ping: {self.conn.avg_ping:.2f} ms")
-        except KeyboardInterrupt:
-            await self.conn.close()
+        while True:
+            await asyncio.sleep(10)
+            await self.manager.update_status({
+                "iteration": i,
+                "task": "Idle"
+            })
+            print("Worker Loop")
 
     def start(self):
         try:

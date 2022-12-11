@@ -9,7 +9,7 @@ import websockets.exceptions
 from websockets.client import connect
 
 from common import message_codes as mc
-from . import config
+from worker import config
 
 
 class Connection:

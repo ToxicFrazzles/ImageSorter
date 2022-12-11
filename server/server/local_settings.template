@@ -31,6 +31,6 @@ STATIC_ROOT = BASE_DIR / "static"
 # region MediaManager Settings
 
 USE_XACCEL_FOR_MEDIA = False
-MEDIA_HOME_DIRECTORY = BASE_DIR / "media"
+MEDIA_HOME_DIRECTORY = BASE_DIR.parent / "media"
 
 # endregion

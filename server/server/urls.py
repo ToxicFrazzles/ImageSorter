@@ -16,9 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 import media_manager.urls
+import auto_tagger.urls
 
 urlpatterns = [
     path('', include(media_manager.urls)),
+    path('auto_tag/', include(auto_tagger.urls)),
     # path('django_query_profiler/', include('django_query_profiler.client.urls')),
     path('admin/', admin.site.urls),
 ]

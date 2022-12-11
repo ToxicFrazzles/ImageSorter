@@ -7,7 +7,8 @@ from pathlib import Path
 
 
 class MediaView(LoginRequiredView):
-    def get(self, request, image: MediaFile):
+    def get(self, request, image: int):
+        image = MediaFile.objects.get(id=image)
         if settings.USE_XACCEL_FOR_MEDIA:
             file_path = Path(image.file_path).relative_to(settings.MEDIA_HOME_DIRECTORY)
             response = HttpResponse()

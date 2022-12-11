@@ -132,3 +132,5 @@ dmypy.json
 secret_key.txt
 media_home/
 worker_config.ini
+/media/
+/test/
