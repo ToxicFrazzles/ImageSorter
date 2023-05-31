@@ -1,4 +1,6 @@
 import json
+import random
+
 from .login_required import LoginRequiredView
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.http.response import JsonResponse
@@ -8,8 +10,9 @@ from ..models import MediaFile, Tag, TagAction
 
 
 def get_next_image(tag: Tag):
-    media_set = MediaFile.objects.exclude(tags=tag)
-    return media_set.distinct().order_by('?').first()
+    media_set = MediaFile.objects.exclude(tags=tag).distinct()
+    index = random.randint(0, media_set.count()-1)
+    return media_set[index]
 
 
 class TagImageView(LoginRequiredView):
