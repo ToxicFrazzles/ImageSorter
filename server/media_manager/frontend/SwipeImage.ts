@@ -42,15 +42,16 @@ class SwipeImage extends HTMLElement{
         if(this.mediaElem.tagName !== "img" && this.mediaType === "image"){
             this.mediaElem.remove();
             this.mediaElem = document.createElement("img");
-            this.shadowRoot.querySelector("div.media-container").appendChild(this.mediaElem);
+            // this.shadowRoot.querySelector("div.media-container").appendChild(this.mediaElem);
+            this.shadowRoot.appendChild(this.mediaElem);
         }else if(this.mediaElem.tagName !== "video" && this.mediaType === "video"){
             this.mediaElem.remove();
-            let container = this.shadowRoot.querySelector("div.media-container");
+            // let container = this.shadowRoot.querySelector("div.media-container");
             let videoTag = document.createElement("video");
             videoTag.setAttribute("autoplay", "");
             videoTag.setAttribute("loop", "");
             videoTag.setAttribute("controls", "");
-            container.appendChild(videoTag);
+            this.shadowRoot.appendChild(videoTag);
 
             this.mediaElem = document.createElement("source");
             videoTag.appendChild(this.mediaElem);
