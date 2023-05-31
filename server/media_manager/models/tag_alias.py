@@ -6,6 +6,9 @@ class TagAlias(models.Model):
     description = models.TextField(blank=True, default="")
     tag = models.ForeignKey("Tag", on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name_plural = "Tag aliases"
+
     def __str__(self):
         return f"{self.name}"
 

@@ -1,31 +1,16 @@
-import asyncio
-import hashlib
-import json
-
-import aiohttp
-
-from . import config
-from .media_manager import MediaManager
+from .media_manager.media_manager import MediaManager
+from .ws_auth import WSAuth
+from .ws_ping import WSPing
 
 
 class Worker:
     def __init__(self):
         self.manager = MediaManager()
 
-    async def _run(self):
-        await self.manager.start()
-        await self.manager.log_ping()
-        i = 0
-        while True:
-            await asyncio.sleep(10)
-            await self.manager.update_status({
-                "iteration": i,
-                "task": "Idle"
-            })
-            print("Worker Loop")
-
-    def start(self):
+    def run(self):
         try:
-            asyncio.run(self._run())
+            self.manager.register_module(WSAuth(self.manager))
+            self.manager.register_module(WSPing(self.manager))
+            self.manager.run()
         except KeyboardInterrupt:
             pass

@@ -1,19 +1,23 @@
 import json
 import random
 from .login_required import LoginRequiredView
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.http.response import JsonResponse
 from ..models import MediaFile, Tag, TagAction
 
 
 def get_next_image_set(tag: Tag):
     media_set = MediaFile.objects.exclude(tags=tag).filter(media_type=MediaFile.MediaType.IMAGE)
-    offset = random.randint(0, tag.untagged_count()-21)
+    untagged = tag.untagged_count()
+    if untagged < 20:
+        return media_set
+    offset = random.randint(0, tag.untagged_count()-20)
     return media_set[offset:offset+20]
 
 
 class TagImagesView(LoginRequiredView):
-    def get(self, request, tag):
+    def get(self, request, tag_id):
+        tag: Tag = get_object_or_404(Tag, id=tag_id)
         the_images = get_next_image_set(tag)
         if len(the_images) == 0:
             return redirect('media_manager:tag_list')
@@ -23,7 +27,8 @@ class TagImagesView(LoginRequiredView):
         }
         return render(request, 'media_manager/tag_images.html', context=ctx)
 
-    def post(self, request, tag: Tag):
+    def post(self, request, tag_id):
+        tag: Tag = get_object_or_404(Tag, id=tag_id)
         post_data = json.loads(request.body)
 
         positive_images = MediaFile.objects.prefetch_related("tags").filter(id__in=post_data.get('positives'))

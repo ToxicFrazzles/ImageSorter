@@ -1,4 +1,5 @@
-{% extends 'media_manager/base.html' %}
+{% extends 'media_manager/../base.html' %}
+{% load static %}
 
 {% block head %}
     <style>
@@ -26,7 +27,7 @@
             grid-column: 1/3;
         }
 
-        .img img {
+        .img img, .img swipe-image {
             max-height: 100%;
             max-width: 100%;
             height: auto;
@@ -65,13 +66,14 @@
             }
         }
     </style>
+    <script src="{% static 'media_manager/SwipeImage.js' %}"></script>
 {% endblock %}
 
 {% block content %}
     <div id="container">
         <h1>{{ tag }} Image Tagging</h1>
         <div class="img">
-            <img id="image-to-tag" src="{% url 'media_manager:media' the_image %}"/>
+            <swipe-image id="image-to-tag" src="{% url 'media_manager:media' the_image %}" mime="{{ the_image.mime_type }}"></swipe-image>
         </div>
         <div id="tagging-area">
             <button class="tag" value="positive">{{ tag }}</button>

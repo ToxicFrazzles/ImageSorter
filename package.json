@@ -1,0 +1,28 @@
+{
+  "name": "mediamanager",
+  "version": "1.0.0",
+  "description": "View and sort images into subfolders",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rm server/*/static/**/*.js & webpack",
+    "build:prod": "rm server/*/static/**/*.js & webpack --mode=production --node-env=production"
+  },
+  "devDependencies": {
+    "@webpack-cli/generators": "^3.0.1",
+    "html-loader": "^4.2.0",
+    "mini-css-extract-plugin": "^2.7.2",
+    "ts-loader": "^9.4.2",
+    "tsc": "^2.0.4",
+    "webpack-cli": "^5.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ToxicFrazzles/MediaManager.git"
+  },
+  "author": "ToxicFrazzles",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/ToxicFrazzles/MediaManager/issues"
+  },
+  "homepage": "https://github.com/ToxicFrazzles/MediaManager#readme"
+}

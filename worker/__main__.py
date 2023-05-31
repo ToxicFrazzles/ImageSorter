@@ -21,7 +21,7 @@ def main():
     add_arguments()
     args = parser.parse_args()
     config.config = config.Config(Path(args.config).resolve())
-    Worker().start()
+    Worker().run()
 
 
 if __name__ == "__main__":

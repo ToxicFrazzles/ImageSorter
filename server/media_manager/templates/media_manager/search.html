@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block head %}
+    <script src="{% static 'media_manager/LazyMedia.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div style="height: 1200px"></div>
+    <lazy-media src="https://upload.wikimedia.org/wikipedia/commons/3/3d/LARGE_elevation.jpg" w="5" h="3"></lazy-media>
+{% endblock %}
