@@ -1,8 +1,10 @@
 import html from "./SwipeImage/Template.html"
 import {getCookie} from "./Utils";
+import * as events from "events";
 
 class SwipeImage extends HTMLElement{
     private static template: HTMLTemplateElement;
+    private container: HTMLDivElement;
     static {
         this.template = document.createElement("template");
         this.template.innerHTML = html;
@@ -11,10 +13,15 @@ class SwipeImage extends HTMLElement{
         return ['src', 'mime']
     }
 
+
+
     private built: boolean = null;
     private mediaType: string = null;
     private source: string = null;
     private mediaElem: HTMLElement = null;
+
+    private dragStartX: number = null;
+    private dragStartY: number = null;
 
     constructor() {
         super();
@@ -32,6 +39,11 @@ class SwipeImage extends HTMLElement{
         if (this.hasAttribute("mime")) this.mediaType = this.getAttribute("mime").split("/")[0];
 
         this.mediaElem = this.shadowRoot.querySelector("img");
+
+        const self = this;
+        this.container = this.shadowRoot.querySelector("div.media-container");
+        this.container.addEventListener("dragstart", (e: DragEvent) => {self.onDragStart(e)});
+        this.container.addEventListener("dragend", (e: DragEvent) => {self.onDragEnd(e)});
 
         this.built = true;
         if(this.source && this.mediaType) this.updateMedia();
@@ -55,19 +67,26 @@ class SwipeImage extends HTMLElement{
                 let newImg = await this.preloadImage(this.source);
                 await this.removeOldMedia();
                 this.mediaElem = newImg;
-                this.shadowRoot.appendChild(newImg);
+                this.container.appendChild(newImg);
             }else{
                 await this.removeOldMedia();
                 this.mediaElem = document.createElement("img");
-                this.shadowRoot.appendChild(this.mediaElem);
+                this.container.appendChild(this.mediaElem);
             }
+            this.mediaElem.setAttribute("draggable", "false");
+            // this.mediaElem.addEventListener("dragstart", this.onDragStart);
+            // this.mediaElem.addEventListener("dragend", this.onDragEnd);
         }else if(this.mediaType === "video"){
             await this.removeOldMedia();
             let videoTag = document.createElement("video");
             videoTag.setAttribute("autoplay", "");
             videoTag.setAttribute("loop", "");
             videoTag.setAttribute("controls", "");
-            this.shadowRoot.appendChild(videoTag);
+            videoTag.setAttribute("draggable", "true");
+            const self = this;
+            videoTag.addEventListener("dragstart", (e: DragEvent) => {self.onDragStart(e)});
+            videoTag.addEventListener("dragend", (e: DragEvent) => {self.onDragEnd(e)});
+            this.container.appendChild(videoTag);
 
             this.mediaElem = document.createElement("source");
             videoTag.appendChild(this.mediaElem);
@@ -115,6 +134,31 @@ class SwipeImage extends HTMLElement{
         this.source = newSrc;
         this.mediaType = newMimeType.split("/")[0];
         await this.updateMedia();
+    }
+
+    onDragStart(event: DragEvent){
+        console.log("Drag start", event);
+        this.dragStartX = event.clientX;
+        this.dragStartY = event.clientY;
+    }
+
+    onDragEnd(event: DragEvent){
+        console.log("Drag end", event);
+        let deltaY = Math.abs(this.dragStartY-event.clientY);
+        let deltaX = event.clientX - this.dragStartX;
+        if(Math.abs(this.dragStartX-event.clientX) <= deltaY) return;
+        if(Math.abs(deltaX) < 50) return;
+        if(deltaX < 0){
+            // Drag direction was left
+            console.log("Dragged Left")
+            console.log(this);
+            this.tagMedia(false);
+        }else{
+            // Drag direction was right
+            console.log("Dragged Right")
+            console.log(this);
+            this.tagMedia(true);
+        }
     }
 
     attributeChangedCallback(name: string, oldValue: string, newValue: string) {
