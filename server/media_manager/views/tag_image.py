@@ -11,6 +11,8 @@ from ..models import MediaFile, Tag, TagAction
 
 def get_next_image(tag: Tag):
     media_set = MediaFile.objects.exclude(tags=tag).distinct()
+    if media_set.count() == 0:
+        return None
     index = random.randint(0, media_set.count()-1)
     return media_set[index]
 

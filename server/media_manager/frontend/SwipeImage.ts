@@ -1,4 +1,5 @@
 import html from "./SwipeImage/Template.html"
+import {getCookie} from "./Utils";
 
 class SwipeImage extends HTMLElement{
     private static template: HTMLTemplateElement;
@@ -36,17 +37,32 @@ class SwipeImage extends HTMLElement{
         if(this.source && this.mediaType) this.updateMedia();
     }
 
-    updateMedia(){
+    async removeOldMedia(){
+        if (this.mediaElem.tagName === "IMG") {
+            this.mediaElem.remove();
+        } else if(this.mediaElem.tagName==="SOURCE"){
+            let videoTag = this.mediaElem.parentElement;
+            this.mediaElem.remove();
+            videoTag.remove();
+        }
+    }
+
+    async updateMedia(){
         if(!this.built) return;
         console.log(this.source, this.mediaType);
-        if(this.mediaElem.tagName !== "img" && this.mediaType === "image"){
-            this.mediaElem.remove();
-            this.mediaElem = document.createElement("img");
-            // this.shadowRoot.querySelector("div.media-container").appendChild(this.mediaElem);
-            this.shadowRoot.appendChild(this.mediaElem);
-        }else if(this.mediaElem.tagName !== "video" && this.mediaType === "video"){
-            this.mediaElem.remove();
-            // let container = this.shadowRoot.querySelector("div.media-container");
+        if(this.mediaElem.tagName !== "IMG" && this.mediaType === "image"){
+            if(this.mediaElem.getAttribute("src")){
+                let newImg = await this.preloadImage(this.source);
+                await this.removeOldMedia();
+                this.mediaElem = newImg;
+                this.shadowRoot.appendChild(newImg);
+            }else{
+                await this.removeOldMedia();
+                this.mediaElem = document.createElement("img");
+                this.shadowRoot.appendChild(this.mediaElem);
+            }
+        }else if(this.mediaType === "video"){
+            await this.removeOldMedia();
             let videoTag = document.createElement("video");
             videoTag.setAttribute("autoplay", "");
             videoTag.setAttribute("loop", "");
@@ -57,6 +73,48 @@ class SwipeImage extends HTMLElement{
             videoTag.appendChild(this.mediaElem);
         }
         this.mediaElem.setAttribute("src", this.source);
+    }
+
+    async preloadImage(source: string): Promise<HTMLImageElement>{
+        return new Promise((resolve, reject) => {
+                let img = new Image();
+                img.addEventListener('load', e => resolve(img));
+                img.addEventListener('error', () => {
+                    reject(new Error(`Failed to load image's URL: ${source}`));
+                });
+                img.src = source;
+            });
+    }
+
+    async tagMedia(positivity: boolean){
+        const url = window.location.pathname;
+        let mediaId = this.source.split("/")[2];
+        console.log(url, mediaId);
+
+        let postData = JSON.stringify({
+            image_id: mediaId,
+            positive: positivity
+        });
+
+        let response = await fetch(url, {
+            method: 'post',
+            body: postData,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        });
+        let jsonResponse = await response.json();
+        if(jsonResponse["next_image"] === null){
+            location.reload();
+            return;
+        }
+        let newSrc = jsonResponse["next_image"]["url"];
+        let newMimeType = jsonResponse["next_image"]["mime-type"];
+        this.source = newSrc;
+        this.mediaType = newMimeType.split("/")[0];
+        await this.updateMedia();
     }
 
     attributeChangedCallback(name: string, oldValue: string, newValue: string) {

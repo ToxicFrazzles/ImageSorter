@@ -83,6 +83,7 @@
         const tagButtons = document.querySelectorAll("#tagging-area button.tag");
         const undoButtonEl = document.querySelector("#tagging-area button.undo");
         const imageEl = document.querySelector(".img>swipe-image");
+        console.log(imageEl);
         let imageId = {{ the_image.id }};
         let previousImageId = null;
         let previousImageUrl = null;
@@ -144,6 +145,8 @@
 
         function tagImage(event) {
             let positivity = event.target.value === "positive";
+            imageEl.tagMedia(positivity);
+            return;
 
             const url = "{% url 'media_manager:tag_image' tag %}";
             let post = JSON.stringify({
